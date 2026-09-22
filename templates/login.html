@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>HMS – Login</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0f1117;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: radial-gradient(ellipse at 20% 50%, rgba(99,102,241,0.15) 0%, transparent 50%),
+                              radial-gradient(ellipse at 80% 20%, rgba(16,185,129,0.1) 0%, transparent 50%);
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 420px;
+            padding: 20px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .logo-icon {
+            width: 60px; height: 60px;
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            border-radius: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 12px;
+            box-shadow: 0 8px 32px rgba(99,102,241,0.4);
+        }
+
+        .logo h1 { color: #fff; font-size: 24px; font-weight: 700; }
+        .logo p { color: #6b7280; font-size: 14px; margin-top: 4px; }
+
+        .card {
+            background: #1a1d27;
+            border: 1px solid #2d3048;
+            border-radius: 20px;
+            padding: 36px;
+            box-shadow: 0 24px 64px rgba(0,0,0,0.4);
+        }
+
+        .tabs {
+            display: flex;
+            background: #111318;
+            border-radius: 10px;
+            padding: 4px;
+            margin-bottom: 28px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            color: #6b7280;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: #6366f1;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(99,102,241,0.4);
+        }
+
+        .form-section { display: none; }
+        .form-section.active { display: block; }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            color: #9ca3af;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 7px;
+            letter-spacing: 0.3px;
+        }
+
+        input {
+            width: 100%;
+            background: #111318;
+            border: 1px solid #2d3048;
+            border-radius: 10px;
+            padding: 12px 16px;
+            color: #e5e7eb;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+        }
+
+        .input-wrap { position: relative; }
+
+        .field-error {
+            font-size: 11px;
+            color: #f87171;
+            margin-top: 5px;
+            display: none;
+        }
+
+        input.invalid {
+            border-color: #ef4444;
+            box-shadow: 0 0 0 3px rgba(239,68,68,0.15);
+        }
+
+        input.valid {
+            border-color: #10b981;
+        }
+
+        .strength-bar {
+            height: 3px;
+            border-radius: 2px;
+            margin-top: 6px;
+            background: #1e2030;
+            overflow: hidden;
+        }
+        .strength-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.3s, background 0.3s;
+            width: 0;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 13px;
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 16px rgba(99,102,241,0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 24px rgba(99,102,241,0.5);
+        }
+
+        .btn-primary:active { transform: translateY(0); }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            margin-bottom: 16px;
+            display: none;
+        }
+
+        .alert.error { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: #f87171; }
+        .alert.success { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); color: #34d399; }
+        .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    </style>
+</head>
+<body>
+<div class="login-container">
+    <div class="logo">
+        <div class="logo-icon">🏨</div>
+        <h1>HMS Portal</h1>
+        <p>Hostel Management System</p>
+    </div>
+
+    <div class="card">
+        <div class="tabs">
+            <button class="tab-btn active" id="tab-login" onclick="switchTab('login')">Login</button>
+            <button class="tab-btn" id="tab-register" onclick="switchTab('register')">Register</button>
+        </div>
+
+        <!-- Login Form -->
+        <div class="form-section active" id="section-login">
+            <div id="login-alert" class="alert"></div>
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="login-username" placeholder="Enter username" autocomplete="username"/>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="login-password" placeholder="Enter password" autocomplete="current-password"/>
+            </div>
+            <button class="btn-primary" onclick="login()">Login to Dashboard →</button>
+        </div>
+
+        <!-- Register Form -->
+        <div class="form-section" id="section-register">
+            <div id="reg-alert" class="alert"></div>
+            <div class="row-2">
+                <div class="form-group">
+                    <label>First Name</label>
+                    <input type="text" id="reg-fname" placeholder="John" oninput="validateField(this,'fname')"/>
+                    <span class="field-error" id="err-fname">Letters only, 2–30 chars</span>
+                </div>
+                <div class="form-group">
+                    <label>Last Name</label>
+                    <input type="text" id="reg-lname" placeholder="Doe" oninput="validateField(this,'lname')"/>
+                    <span class="field-error" id="err-lname">Letters only, 2–30 chars</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Mobile Number</label>
+                <input type="text" id="reg-mob" placeholder="10-digit mobile" maxlength="10" oninput="validateField(this,'mob')"/>
+                <span class="field-error" id="err-mob">Enter a valid 10-digit mobile number</span>
+            </div>
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="reg-username" placeholder="4–20 chars, letters & numbers" oninput="validateField(this,'username')"/>
+                <span class="field-error" id="err-username">4–20 characters, letters/numbers/underscores only</span>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="reg-password" placeholder="Min 6 characters" oninput="validateField(this,'password')"/>
+                <div class="strength-bar"><div class="strength-fill" id="strength-fill"></div></div>
+                <span class="field-error" id="err-password">Password must be at least 6 characters</span>
+            </div>
+            <button class="btn-primary" onclick="register()">Create Account →</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const API = 'http://localhost:5000/api';
+
+    // ── Validation Rules ──────────────────────────
+    const rules = {
+        fname:    v => /^[a-zA-Z ]{2,30}$/.test(v),
+        lname:    v => /^[a-zA-Z ]{2,30}$/.test(v),
+        mob:      v => /^[6-9]\d{9}$/.test(v),
+        username: v => /^[a-zA-Z0-9_]{4,20}$/.test(v),
+        password: v => v.length >= 6,
+    };
+
+    function validateField(input, key) {
+        const valid = rules[key](input.value.trim());
+        input.classList.toggle('valid',   valid);
+        input.classList.toggle('invalid', !valid);
+        const errEl = document.getElementById('err-' + key);
+        if (errEl) errEl.style.display = valid ? 'none' : 'block';
+        if (key === 'password') updateStrength(input.value);
+        return valid;
+    }
+
+    function updateStrength(pw) {
+        const fill = document.getElementById('strength-fill');
+        let score = 0;
+        if (pw.length >= 6)  score++;
+        if (pw.length >= 10) score++;
+        if (/[A-Z]/.test(pw)) score++;
+        if (/[0-9]/.test(pw)) score++;
+        if (/[^a-zA-Z0-9]/.test(pw)) score++;
+        const colors = ['#ef4444','#f97316','#f59e0b','#10b981','#6366f1'];
+        fill.style.width = (score * 20) + '%';
+        fill.style.background = colors[score - 1] || '#2d3048';
+    }
+
+    function showAlert(id, type, msg) {
+        const el = document.getElementById(id);
+        el.className = `alert ${type}`;
+        el.textContent = msg;
+        el.style.display = 'block';
+        setTimeout(() => { el.style.display = 'none'; }, 4000);
+    }
+
+    function switchTab(tab) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
+        document.getElementById('tab-' + tab).classList.add('active');
+        document.getElementById('section-' + tab).classList.add('active');
+        // Only clear register form validation state, not login fields
+        const regSection = document.getElementById('section-register');
+        regSection.querySelectorAll('input').forEach(i => { i.classList.remove('valid','invalid'); });
+        regSection.querySelectorAll('.field-error').forEach(e => e.style.display = 'none');
+        document.getElementById('strength-fill').style.width = '0';
+    }
+
+    async function login() {
+        const username = document.getElementById('login-username').value.trim();
+        const password = document.getElementById('login-password').value.trim();
+        if (!username || !password) return showAlert('login-alert', 'error', 'Please enter username and password.');
+
+        const btn = document.querySelector('#section-login .btn-primary');
+        btn.textContent = 'Logging in...';
+        btn.disabled = true;
+
+        try {
+            const res = await fetch(`${API}/auth/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+            const data = await res.json();
+            if (res.ok) {
+                localStorage.setItem('hms_token', data.token);
+                localStorage.setItem('hms_admin', JSON.stringify(data.admin));
+                window.location.href = '/dashboard.html';
+            } else {
+                showAlert('login-alert', 'error', data.error || 'Login failed');
+                btn.textContent = 'Login to Dashboard →';
+                btn.disabled = false;
+            }
+        } catch (e) {
+            console.error('Login fetch error:', e);
+            showAlert('login-alert', 'error', 'Cannot reach server. Is Flask running on port 5000?');
+            btn.textContent = 'Login to Dashboard →';
+            btn.disabled = false;
+        }
+    }
+
+    async function register() {
+        // Run all field validations
+        const fnameOk    = validateField(document.getElementById('reg-fname'),    'fname');
+        const lnameOk    = validateField(document.getElementById('reg-lname'),    'lname');
+        const mobOk      = validateField(document.getElementById('reg-mob'),      'mob');
+        const usernameOk = validateField(document.getElementById('reg-username'), 'username');
+        const passwordOk = validateField(document.getElementById('reg-password'), 'password');
+
+        if (!fnameOk || !lnameOk || !mobOk || !usernameOk || !passwordOk) {
+            return showAlert('reg-alert', 'error', 'Please fix the errors highlighted below.');
+        }
+
+        const payload = {
+            fname:    document.getElementById('reg-fname').value.trim(),
+            lname:    document.getElementById('reg-lname').value.trim(),
+            mob_no:   document.getElementById('reg-mob').value.trim(),
+            username: document.getElementById('reg-username').value.trim(),
+            password: document.getElementById('reg-password').value.trim()
+        };
+
+        try {
+            const res  = await fetch(`${API}/auth/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (res.ok) {
+                showAlert('reg-alert', 'success', '✅ Registered! You can now login.');
+                switchTab('login');
+                document.getElementById('login-username').value = payload.username;
+            } else {
+                showAlert('reg-alert', 'error', data.error || 'Registration failed');
+            }
+        } catch (e) {
+            showAlert('reg-alert', 'error', 'Cannot connect to server');
+        }
+    }
+
+    // Enter key support
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Enter') {
+            if (document.getElementById('section-login').classList.contains('active')) login();
+            else register();
+        }
+    });
+
+    // Clear any stale/invalid token on page load
+    const existingToken = localStorage.getItem('hms_token');
+    if (existingToken) {
+        // Verify token is still valid before redirecting
+        fetch(`${API}/dashboard/stats`, {
+            headers: { 'Authorization': 'Bearer ' + existingToken }
+        }).then(r => {
+            if (r.ok) window.location.href = '/dashboard.html';
+            else { localStorage.removeItem('hms_token'); localStorage.removeItem('hms_admin'); }
+        }).catch(() => { /* server might be down, stay on login page */ });
+    }
+</script>
+</body>
+</html>
